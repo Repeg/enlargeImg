@@ -1,5 +1,6 @@
 # enlargeImg
-based on vue.js
+based on vue.js  
+
 you can run 
 # npm install enlargeimg --save-dev to install 
 then
