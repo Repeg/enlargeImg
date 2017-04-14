@@ -4,7 +4,7 @@
 [github][1]
 
 
-#安装
+# 安装
 
     npm install enlargeimg --save-dev
     
@@ -13,7 +13,7 @@
 
  
 
-#基础用法
+# 基础用法
 
     <enlargeImg :data="files"></enlargeImg> 
 
@@ -39,7 +39,7 @@
       },
     }
     
-#注意事项
+# 注意事项
 
     图片地址为path
     
