@@ -113,8 +113,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang='scss'>
+<style>
 .largeContainer{
     top: 0;
     right: 0;
@@ -148,25 +147,25 @@ export default {
   height:100%;
   width:6%;
   cursor: pointer;
-  div{
-    position:absolute;
-    z-index:44;
-    background-color: rgba(40,40,40,0.8);
-    height:100%;
-    width: 6%;
-  }
+}
+.sideClick div{
+  position:absolute;
+  z-index:44;
+  background-color: rgba(40,40,40,0.8);
+  height:100%;
+  width: 6%;
 }
 .sideClickFade{
   height:100%;
   width:6%;
   cursor: pointer;
-  div{
-    position:absolute;
-    z-index:44;
-    background-color: rgba(40,40,40,0);
-    height:100%;
-    width: 6%;
-  }
+}
+.sideClickFade div{
+  position:absolute;
+  z-index:44;
+  background-color: rgba(40,40,40,0);
+  height:100%;
+  width: 6%;
 }
 .clickArrow{
   height:100px;
