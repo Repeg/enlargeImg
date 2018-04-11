@@ -1,24 +1,32 @@
 <template>
   <div class="layout-mgt-30">
+    <div class='tip' v-show='tip1'>不能再放大了哦！</div>
+    <div class='tip' v-show='tip2'>不能再缩小了哦！</div>
+    <div class='tip' v-show='tip3'>前面已经没有了！</div>
+    <div class='tip' v-show='tip4'>已经是最后一张了哦！</div>
     <div v-for="(item,index) in data">
         <img :src="item.path" @click="enlargeImg(item.path,index)" class="smallImg">
     </div>
     <div v-if="largeContainer" class="largeContainer">
-      <div class="fl" :class="{sideClickFade: isSideClickFade,sideClick:isSideClick}" @mouseover="over" @mouseout="out">
+      <div class="fl sideClick">
         <div @click="prevImg">
-          <img src="../assets/left_arrow.png" :class="{clickArrow: isClickArrow,clickArrowFade:isClickArrowFade}">
+          <img src="../assets/left_arrow.png" class="clickArrow">
         </div>
       </div>
       <div class="box-image-wrapper fl">
-        <img :src="enlargeImgUrl" style="height:100%;margin:0 auto;cursor: pointer;" :class="{rotate90:rotate==1,rotate180:rotate==2,rotate270:rotate==3,rotate0:rotate==0}" @click="enSmallImg"><br>
-        <img src="../assets/circle.png" style="position:absolute;z-index:55;height: 30px;margin-top:35px;cursor: pointer;" @click="rotateImg">
-        <img src="../assets/circle.png" style="position:absolute;z-index:55;height: 30px;margin-top:35px;cursor: pointer;transform:rotateY(180deg);margin-left:30px" @click="rotateImgBack">
+        <img :src="enlargeImgUrl" class='mainImg' :class="{rotate90:rotate==1,rotate180:rotate==2,rotate270:rotate==3,rotate0:rotate==0,largeImg60: large==1,largeImg70: large==2,largeImg80: large==3,largeImg90: large==4,largeImg100: large==5}" @click="enSmallImg"><br>
       </div>
-      <div class="fr" :class="{sideClickFade: isSideClickFade,sideClick:isSideClick}" @mouseover="over" @mouseout="out">
+      <div class="fr sideClickR">
         <div @click="nextImg">
-          <img src="../assets/right_arrow.png" :class="{clickArrow: isClickArrow,clickArrowFade: isClickArrowFade}">
+          <img src="../assets/right_arrow.png" class="clickArrow">
         </div>
       </div>
+    </div>
+    <div class='bottom'>
+      <img src="../assets/large.png" class='rotate' @click="largeImg">
+      <img src="../assets/small.png" class='rotate' @click="smallImg">
+      <img src="../assets/circle.png" class='rotate' @click="rotateImg">
+      <img src="../assets/circle1.png" class='rotate' @click="rotateImgBack">
     </div>
   </div>
 </template>
@@ -33,16 +41,22 @@ export default {
       imageIndex:'',
       preImgUrl:'',
       nextImgUrl:'',
-      isSideClickFade:true,
-      isSideClick:false,
-      isClickArrow:false,
-      isClickArrowFade:true,
-      rotate:0
+      rotate:0,
+      large: 0,
+      tip1: false,
+      tip2: false,
+      tip3: false,
+      tip4: false,
     }
   },
   props:{
     "data":{
       type:Array,
+    }
+  },
+  watch:{
+    tip1(res){
+
     }
   },
   methods:{
@@ -75,17 +89,41 @@ export default {
         this.rotate=2;
       }
     },
-    over() {
-      this.isSideClickFade = false;
-      this.isSideClick = true;
-      this.isClickArrow = true;
-      this.isClickArrowFade = false;
+    largeImg(){
+      if(this.large==0){
+        this.large = 1
+      }else if(this.large==1){
+        this.large = 2
+      }else if(this.large==2){
+        this.large = 3
+      }else if(this.large==3){
+        this.large = 4
+      }else if(this.large==4){
+        this.large = 5
+      }else if(this.large==5){
+        this.tip1 = true
+        setTimeout(()=>{
+          this.tip1 = false
+        },1500)
+      }
     },
-    out() {
-      this.isSideClickFade = true;
-      this.isSideClick = false;
-      this.isClickArrow = false;
-      this.isClickArrowFade = true;
+    smallImg(){
+      if(this.large==0){
+        this.tip2 = true
+        setTimeout(()=>{
+          this.tip2 = false
+        },1500)
+      }else if(this.large==1){
+        this.large = 0
+      }else if(this.large==2){
+        this.large = 1
+      }else if(this.large==3){
+        this.large = 2
+      }else if(this.large==4){
+        this.large = 3
+      }else if(this.large==5){
+        this.large = 4
+      }
     },
     enSmallImg(){
       this.largeContainer=false;
@@ -93,8 +131,12 @@ export default {
     },
     prevImg(){
       // console.log('this.imageIndex'+this.imageIndex);
+      this.large = 0
       if(this.imageIndex==0){
-        alert('前面已经没有了！');
+        this.tip3 = true
+        setTimeout(()=>{
+          this.tip3 = false
+        },1500)
       }else{
         this.enlargeImgUrl = this.data[this.imageIndex-1].path;
         this.imageIndex = this.imageIndex-1;
@@ -102,8 +144,12 @@ export default {
     },
     nextImg(){
       // console.log('this.data.length'+this.data.length);
+      this.large = 0
       if(this.imageIndex==this.data.length-1){
-        alert('已经是最后一张了哦！');
+        this.tip4 = true
+        setTimeout(()=>{
+          this.tip4 = false
+        },1500)
       }else{
         this.enlargeImgUrl = this.data[this.imageIndex+1].path;
         this.imageIndex = this.imageIndex+1;
@@ -115,26 +161,60 @@ export default {
 
 <style>
 .largeContainer{
-    top: 0;
-    right: 0;
-    left: 0;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(55,55,55,0.9);
-    z-index: 22;
-    box-sizing: border-box;
+  top: 0;
+  right: 0;
+  left: 0;
+  position: fixed;
+  width: 100%;
+  height: -webkit-fill-available;
+  height: fill-available;
+  background-color: rgba(55,55,55,0.9);
+  z-index: 22;
+  box-sizing: border-box;
 }
 .box-image-wrapper{
-    top: 0;
-    position: fixed;
-    width: 100%;
-    height: 90%;
-    z-index: 33;
-    text-align: center;
+  top: 0;
+  position: fixed;
+  width: 100%;
+  height: -webkit-fill-available;
+  height: fill-available;
+  z-index: 33;
+  text-align: center;
+  overflow-y: auto; 
 }
 .layout-mgt-30{
   margin-top: 30px;
+}
+.mainImg{
+  max-width: 50%;
+  width: 50%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  cursor: pointer;
+}
+.largeImg60{
+  max-width: 60%;
+  width: 60%;
+}
+.largeImg70{
+  max-width: 70%;
+  width: 70%;
+}
+.largeImg80{
+  max-width: 80%;
+  width: 80%;
+}
+.largeImg90{
+  max-width: 90%;
+  width: 90%;
+}
+.largeImg100{
+  max-width: 100%;
+  width: 100%;
 }
 .smallImg{
   height:80px;
@@ -148,33 +228,36 @@ export default {
   width:6%;
   cursor: pointer;
 }
-.sideClick div{
-  position:absolute;
-  z-index:44;
-  background-color: rgba(40,40,40,0.8);
-  height:100%;
-  width: 6%;
-}
-.sideClickFade{
+.sideClickR{
   height:100%;
   width:6%;
   cursor: pointer;
 }
-.sideClickFade div{
-  position:absolute;
-  z-index:44;
-  background-color: rgba(40,40,40,0);
-  height:100%;
-  width: 6%;
+.sideClick div{
+  position: fixed;
+  z-index: 44;
+  background-color: rgba(40,40,40,0.8);
+  height: 75px;
+  width: 60px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  margin-left: 20px;
+}
+.sideClickR div{
+  position: fixed;
+  z-index: 44;
+  background-color: rgba(40,40,40,0.8);
+  height: 75px;
+  width: 60px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  right: 20px;
 }
 .clickArrow{
-  height:100px;
   width:50%;
-  margin-left: 25%;
-  margin-top: 350px;
-}
-.clickArrowFade{
-  display: none;
+  margin-top: 10px;
 }
 .rotate0{
   transform: rotate(0deg); 
@@ -193,5 +276,39 @@ export default {
 }
 .fl{
   float:left;
+}
+.rotate{
+  height: 30px;
+  cursor: pointer;
+}
+.rotateR{
+  height: 30px;
+  cursor: pointer;
+  transform:rotateY(180deg);
+}
+.bottom{
+  width: 100%;
+  position:fixed;
+  z-index:55;
+  bottom:0;
+  padding: 15px 0;
+  margin-left: -8px;
+  background-color: #464646;
+}
+.tip{
+  position: fixed;
+  top: 200px;
+  margin: auto;
+  left: 0;
+  right: 0;
+  background-color: #888;
+  color: #fff;
+  height: 30px;
+  font-size: 14px;
+  line-height: 30px;
+  width: 120px;
+  padding: 0 5px;
+  border-radius: 6px;
+  z-index: 100;
 }
 </style>
