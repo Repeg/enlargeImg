@@ -14,7 +14,7 @@
         </div>
       </div>
       <div class="box-image-wrapper fl">
-        <img :src="enlargeImgUrl" class='mainImg' :class="{rotate90:rotate==1,rotate180:rotate==2,rotate270:rotate==3,rotate0:rotate==0,largeImg60: large==1,largeImg70: large==2,largeImg80: large==3,largeImg90: large==4,largeImg100: large==5}" @click="enSmallImg"><br>
+        <img :src="enlargeImgUrl" class='mainImg' :style='{maxWidth: mWidth,width: widthImg}' :class="{rotate90:rotate==1,rotate180:rotate==2,rotate270:rotate==3,rotate0:rotate==0}" @click="enSmallImg"><br>
       </div>
       <div class="fr sideClickR">
         <div @click="nextImg">
@@ -22,7 +22,7 @@
         </div>
       </div>
     </div>
-    <div class='bottom'>
+    <div class='bottom' v-if="largeContainer">
       <img src="../assets/large.png" class='rotate' @click="largeImg">
       <img src="../assets/small.png" class='rotate' @click="smallImg">
       <img src="../assets/circle.png" class='rotate' @click="rotateImg">
@@ -42,11 +42,12 @@ export default {
       preImgUrl:'',
       nextImgUrl:'',
       rotate:0,
-      large: 0,
       tip1: false,
       tip2: false,
       tip3: false,
       tip4: false,
+      mWidth: '50%',
+      widthImg: '50%'
     }
   },
   props:{
@@ -61,13 +62,11 @@ export default {
   },
   methods:{
     enlargeImg(url,i){
-      this.largeContainer=true;
-      this.enlargeImgUrl = url;
-      this.imageIndex = i;
-      // console.log(i);
+      this.largeContainer=true
+      this.enlargeImgUrl = url
+      this.imageIndex = i
     },
     rotateImg(){
-      // console.log(this.rotate);
       if(this.rotate==0){
         this.rotate=1;
       }else if(this.rotate==1){
@@ -90,69 +89,65 @@ export default {
       }
     },
     largeImg(){
-      if(this.large==0){
-        this.large = 1
-      }else if(this.large==1){
-        this.large = 2
-      }else if(this.large==2){
-        this.large = 3
-      }else if(this.large==3){
-        this.large = 4
-      }else if(this.large==4){
-        this.large = 5
-      }else if(this.large==5){
+      if(this.mWidth=='100.0%'){
         this.tip1 = true
         setTimeout(()=>{
           this.tip1 = false
         },1500)
+      }else{
+        this.mWidth = parseFloat(this.mWidth) + 10
+        this.widthImg = parseFloat(this.widthImg) + 10
+        this.mWidth=Number(this.mWidth).toFixed(1)
+        this.mWidth+="%"
+        this.widthImg=Number(this.widthImg).toFixed(1)
+        this.widthImg+="%"
       }
     },
     smallImg(){
-      if(this.large==0){
+      if(this.mWidth=='10.0%'){
         this.tip2 = true
         setTimeout(()=>{
           this.tip2 = false
         },1500)
-      }else if(this.large==1){
-        this.large = 0
-      }else if(this.large==2){
-        this.large = 1
-      }else if(this.large==3){
-        this.large = 2
-      }else if(this.large==4){
-        this.large = 3
-      }else if(this.large==5){
-        this.large = 4
+      }else{
+        this.mWidth = parseFloat(this.mWidth) - 10
+        this.widthImg = parseFloat(this.widthImg) - 10
+        this.mWidth=Number(this.mWidth).toFixed(1)
+        this.mWidth+="%"
+        this.widthImg=Number(this.widthImg).toFixed(1)
+        this.widthImg+="%"
       }
     },
     enSmallImg(){
-      this.largeContainer=false;
+      this.largeContainer=false
+      this.mWidth = '50%'
+      this.widthImg = '50%'
       this.rotate = 0;
     },
     prevImg(){
-      // console.log('this.imageIndex'+this.imageIndex);
-      this.large = 0
+      this.mWidth = '50%'
+      this.widthImg = '50%'
       if(this.imageIndex==0){
         this.tip3 = true
         setTimeout(()=>{
           this.tip3 = false
         },1500)
       }else{
-        this.enlargeImgUrl = this.data[this.imageIndex-1].path;
-        this.imageIndex = this.imageIndex-1;
+        this.enlargeImgUrl = this.data[this.imageIndex-1].path
+        this.imageIndex = this.imageIndex-1
       }
     },
     nextImg(){
-      // console.log('this.data.length'+this.data.length);
-      this.large = 0
+      this.mWidth = '50%'
+      this.widthImg = '50%'
       if(this.imageIndex==this.data.length-1){
         this.tip4 = true
         setTimeout(()=>{
           this.tip4 = false
         },1500)
       }else{
-        this.enlargeImgUrl = this.data[this.imageIndex+1].path;
-        this.imageIndex = this.imageIndex+1;
+        this.enlargeImgUrl = this.data[this.imageIndex+1].path
+        this.imageIndex = this.imageIndex+1
       }
     }
   }
@@ -170,6 +165,7 @@ export default {
   height: fill-available;
   background-color: rgba(55,55,55,0.9);
   z-index: 22;
+  overflow: auto;
   box-sizing: border-box;
 }
 .box-image-wrapper{
@@ -180,21 +176,21 @@ export default {
   height: fill-available;
   z-index: 33;
   text-align: center;
-  overflow-y: auto; 
+  overflow-y: auto;
+  display: flex;
+  padding-bottom: 60px;
 }
 .layout-mgt-30{
   margin-top: 30px;
 }
 .mainImg{
-  max-width: 50%;
-  width: 50%;
-  position: fixed;
+  cursor: pointer;
+  position: relative;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
-  cursor: pointer;
 }
 .largeImg60{
   max-width: 60%;
@@ -306,7 +302,8 @@ export default {
   height: 30px;
   font-size: 14px;
   line-height: 30px;
-  width: 120px;
+  width: 150px;
+  text-align: center;
   padding: 0 5px;
   border-radius: 6px;
   z-index: 100;
